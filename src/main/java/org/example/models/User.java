@@ -1,5 +1,8 @@
 package org.example.models;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -8,24 +11,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@ApiModel(description = "Model of user account data ")
 @Table(name = "users",
         uniqueConstraints = {
         @UniqueConstraint(columnNames = "username"), @UniqueConstraint(columnNames = "email")
         })
 public class User {
     @Id
+    @ApiModelProperty(notes = "Unique id of user account")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ApiModelProperty(notes = "Account username")
     @NotBlank
     @Size(max = 20)
     private String username;
 
+    @ApiModelProperty(notes = "User email address")
     @NotBlank
     @Size(max = 50)
     @Email
     private String email;
 
+    @ApiModelProperty(notes = "User password")
     @NotBlank
     @Size(max = 120)
     private String password;
