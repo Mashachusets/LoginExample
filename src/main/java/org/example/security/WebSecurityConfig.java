@@ -1,15 +1,17 @@
 package org.example.security;
 
+import org.example.repository.UserRepository;
 import org.example.security.jwt.AuthEntryPointJwt;
 import org.example.security.jwt.AuthTokenFilter;
 import org.example.security.services.UserDetailsImpl;
-import org.example.security.services.UserDetailsServiceImpl;
+//import org.example.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,8 +31,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
         prePostEnabled = true)
 @EnableWebSecurity
 public class WebSecurityConfig {
+//    @Autowired
+//    UserDetailsServiceImpl userDetailsService;
+
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private UserRepository userRepository;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -45,14 +50,14 @@ public class WebSecurityConfig {
                 .addResourceLocations("classpath:/META-INF/resources/");
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-
-        return authProvider;
-    }
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider(){
+//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+//        authProvider.setUserDetailsService(userDetailsService);
+//        authProvider.setPasswordEncoder(passwordEncoder());
+//
+//        return authProvider;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception{
@@ -77,7 +82,7 @@ public class WebSecurityConfig {
         http.authorizeRequests().antMatchers("/xxx/**").authenticated();
         http.authorizeRequests().anyRequest().permitAll();
         http.csrf().disable();
-        http.authenticationProvider(authenticationProvider());
+//        http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
